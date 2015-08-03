@@ -1,5 +1,6 @@
 (function(){
     function BubbleChart(arg){
+	this.name = arg.name ? arg.name : 'bubbleChart';
 	this.margin = {top: 20, right: 20, bottom: 30, left: 40};
 	this.width = 960 - this.margin.left - this.margin.right;
 	this.height = 500 - this.margin.top - this.margin.bottom;
@@ -12,9 +13,11 @@
 	    .attr('width', this.width)
 	    .attr('height', this.height);	
     }
+    BubbleChart.prototype.bindTo = function(){return this.bindTo};
+    BubbleChart.prototype.name = function(){return this.name};
     BubbleChart.prototype.removeData = function(num){
 	var num = num ? num : 1;
-	if(this.data.length < num) {
+	if(this.data.length <= num - 1) {
 	    this.data = [];
 	    return;
 	}
@@ -38,6 +41,7 @@
 	    .attr('cy', function(d){return d.y})
 	    .attr( 'r', function(d){return d.r});
 	plotData.exit().remove();
+	$(this.bindTo).trigger(this.name +'.draw', {length:this.data.length})
     }
 
     function Bubble(arg){
@@ -47,10 +51,8 @@
 	this.r = arg.r ? arg.r : 0;
     }
 
-    var chart = new BubbleChart({bindTo:'div#chart'});
-    chart.addData(1);
-    chart.draw();
-
+    
+    var chart = new BubbleChart({name:'bbc', bindTo:'div#chart'});
 
     $('button.changeBubble').click(function(){
 	var num = parseInt($(this).attr('num'));
@@ -58,4 +60,13 @@
 	else        {chart.removeData(Math.abs(num));}
 	chart.draw();
     });
+    $(chart.bindTo).on('bbc.draw', function(event, arg){
+	var arg = arg ? arg : {length:0};
+	$('td#bubbleNum').text(arg.length);
+    });
+
+
+    chart.addData(1);
+    chart.draw();
+    
 })();
