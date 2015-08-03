@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="css/index.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="page-header">
+	<h1>Control</h1>
+	<button class="btn btn-xs btn-default changeBubble" num="10">+10</button>
+	<button class="btn btn-xs btn-default changeBubble" num="1">+ 1</button>
+	<button class="btn btn-xs btn-default changeBubble" num="-1">- 1</button>
+	<button class="btn btn-xs btn-default changeBubble" num="-10">-10</button>
+	<div class="row">
+	  <div class="col-md-6">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>比率</th>
+                  <th>バブル数</th>
+                </tr>
+              </thead>
+	      <tbody>
+		<tr>
+		  <td>-</td>
+		  <td id="bubbleNum">-</td>
+		</tr>
+	      </tbody>
+            </table>
+	  </div>
+	</div>
+	<div id="chart"></div>
+      </div>
+    </div>
+    <div>
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js"></script>
+      <script type="text/javascript" src="./js/index.js"></script>
+    </div>
+  </body>
+</html>
