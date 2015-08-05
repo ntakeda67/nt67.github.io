@@ -1,0 +1,30 @@
+/* bubble */
+circle.bubble {
+    stroke: rgb(220, 220, 0);
+    stroke-width: 2px;
+    fill:white;
+}
+
+circle.bubble.selected {
+    fill: rgb(230, 230, 0);
+}
+
+/* axis */
+
+.axis path,
+.axis line {
+    fill: none;
+    shape-rendering: crispEdges;
+}
+.axis .tick path,
+.axis .tick line {
+    fill: none;
+    stroke: rgb(240,240,240);
+    stroke-width: 1px;
+    shape-rendering: crispEdges;
+}
+
+.axis text {
+    font-family: sans-serif;
+    font-size: 11px;
+}
