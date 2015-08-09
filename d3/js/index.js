@@ -4,8 +4,8 @@
 	// チャートエリアのマージン
 	this.margin = {top: 20, right: 20, bottom: 30, left: 40};
 	// チャートエリアのサイズ
-	this.width = 320 - this.margin.left - this.margin.right;
-	this.height = 320 - this.margin.top - this.margin.bottom;
+	this.width  = 500 - this.margin.left - this.margin.right;
+	this.height = 500 - this.margin.top - this.margin.bottom;
 	
 	this.data = [];
 
@@ -29,8 +29,12 @@
 	    r:d3.scale.linear().domain(this.domain.r).range(this.range.r)
 	};
 	this.axis = {
-	    x: d3.svg.axis().scale(this.scale.x).orient("bottom").tickSize(this.margin.bottom-this.height),
-	    y: d3.svg.axis().scale(this.scale.y).orient("left").tickSize(this.margin.left-this.width)
+	    x: d3.svg.axis().scale(this.scale.x).orient("bottom")
+		.ticks(5)
+		.tickSize(this.margin.bottom-this.height),
+	    y: d3.svg.axis().scale(this.scale.y).orient("left")
+		.ticks(5)
+		.tickSize(this.margin.left-this.width)
 	};
 	
 	this.svg = d3.select(arg.bindTo).append('svg')
@@ -103,7 +107,7 @@
 	    })
 	    .attr( 'r', function(d){return that.scale.r(d.r);});
 	plotData.exit().remove();
-	$(this.bindTo).trigger(this.name +'.draw', {length:this.data.length})
+	$(this.bindTo).trigger(this.name +'.draw', {length:this.data.length, zoomScale:this.zoom.scale()})
     };
     BubbleChart.prototype.property = function(key, value){
 	if(value){
@@ -120,10 +124,8 @@
 	var duration = 0;
 	var that = this;
 	this.draw();
-	//this.axis.x.tickValues(graph.createPriceTicks(zoom.scale()));
 	this.svg.select(".x.axis").transition().duration(duration).call(this.axis.x);
 
-//	this.axis.y.tickValues(graph.createIncomeTicks(zoom.scale()));
 	this.svg.select(".y.axis").transition().duration(duration).call(this.axis.y);
 
 	this.viewport.selectAll(".bubble").transition().duration(duration).attr("transform", function(){
@@ -134,8 +136,8 @@
 	return this.buildTranslateAttr(this.scale.x(d.x), this.scale.y(d.y));
     };
     BubbleChart.prototype.onDrag = function(d){
-	console.log('x', this.scale.x.domain(), this.domain.x);
-	console.log('y',this.scale.y.domain(), this.domain.y);
+	var zoomScale = this.zoom.scale();
+	var that = this;
 	var dx = d3.event.dx,
 	    dy = d3.event.dy;
 	var tx = 0,
@@ -143,25 +145,24 @@
 	var previousTranslate = this.zoom.translate();
 	var px = previousTranslate[0];
 	var py = previousTranslate[1];
-	if(this.scale.x.domain()[1] > this.domain.x[1] ) {
-//	    console.log('limit x right');
+	/*
+	if(this.scale.x.domain()[1] * this.zoom.scale() > this.domain.x[1] ) {
 	    tx = px + Math.max(dx,0);
 	} else if (this.scale.x.domain()[0] < 0) {
-//	    console.log('limit x left');
 	    tx = 0;
 	} else  {
 	    tx = px + dx
 	}
 	if(this.scale.y.domain()[1] > this.domain.y[1]) {
-//	    console.log('limit y top');
 	    ty = py + Math.min(dy,0);
 	} else if (this.scale.y.domain()[0] < 0) {
-//	    console.log('limit y bottom');
 	    ty = 0;
 	} else {
 	    ty = dy + py;
 	}
-	console.log('tx', tx,'ty', ty);
+	*/
+	tx = px + dx;
+	ty = py + dy;
 	this.zoom.translate([tx, ty]);
 	this.svg.call(this.zoom.event);
     };
@@ -185,10 +186,35 @@
 	chart.draw();
     });
     $(chart.bindTo).on('bbc.draw', function(event, arg){
-	var arg = arg ? arg : {length:0};
+	var arg = arg ? arg : {length:'-', zoomScale: '-'};
+	$('td#chartScale').text(arg.zoomScale);
 	$('td#bubbleNum').text(arg.length);
     });
 
+    $('button#stickGrid').click(function(){
+	var xStep = yStep = 50;
+	chart.data = chart.data.map(function(d,i){
+	    return {
+		id: d.id,
+		x: Math.floor(d.x/xStep) * xStep + xStep/2,
+		y: Math.floor(d.y/yStep) * yStep + yStep/2,
+		r: d.r
+	    };
+	});
+	chart.draw();
+    });
+
+    $('button#refreshTable').click(function(){
+	$('table#dataTable tbody').empty();
+	chart.data.forEach(function(e){
+	    var $tr = $('<tr>');
+	    $tr.append($('<td>').text(e.id));
+	    $tr.append($('<td>').text(e.x));
+	    $tr.append($('<td>').text(e.y));
+	    $tr.append($('<td>').text(e.r));
+	    $('table#dataTable tbody').append($tr);
+	});
+    });
 
     chart.addData(1);
     chart.draw();

@@ -11,10 +11,13 @@
     <div class="container">
       <div class="page-header">
 	<h1>Control</h1>
+	<h3>バブル増減</h3>
 	<button class="btn btn-xs btn-default changeBubble" num="10">+10</button>
 	<button class="btn btn-xs btn-default changeBubble" num="1">+ 1</button>
 	<button class="btn btn-xs btn-default changeBubble" num="-1">- 1</button>
 	<button class="btn btn-xs btn-default changeBubble" num="-10">-10</button>
+	<h3>データ補正</h3>
+	<button id="stickGrid" class="btn btn-xs btn-default">バブル位置をキリのいい感じにする</button>
 	<div class="row">
 	  <div class="col-md-6">
             <table class="table">
@@ -26,7 +29,7 @@
               </thead>
 	      <tbody>
 		<tr>
-		  <td>-</td>
+		  <td id="chartScale">-</td>
 		  <td id="bubbleNum">-</td>
 		</tr>
 	      </tbody>
@@ -34,6 +37,26 @@
 	  </div>
 	</div>
 	<div id="chart"></div>
+	<h3>描画データ一覧</h3>
+	<button id="refreshTable">最新化</button>
+	<table class="table table-striped" id="dataTable">
+	  <thead>
+	    <tr>
+              <th>id</th>
+	      <th>x</th>
+	      <th>y</th>
+	      <th>r</th>
+	    </tr>
+	  </thead>
+	  <tbody>
+	    <tr>
+	      <td></td>
+	      <td></td>
+	      <td></td>
+	      <td></td>
+	    </tr>
+	  </tbody>
+	</table>
       </div>
     </div>
     <div>
