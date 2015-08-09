@@ -106,7 +106,9 @@
 		return that.transformBubble.apply(that, arguments);
 	    })
 	    .attr( 'r', function(d){return that.scale.r(d.r);});
-	plotData.exit().remove();
+
+	plotData.transition().duration(200);
+	plotData.exit().transition().duration(200).remove();
 	$(this.bindTo).trigger(this.name +'.draw', {length:this.data.length, zoomScale:this.zoom.scale()})
     };
     BubbleChart.prototype.property = function(key, value){
@@ -192,7 +194,7 @@
     });
 
     $('button#stickGrid').click(function(){
-	var xStep = yStep = 50;
+	var xStep = yStep = 100;
 	chart.data = chart.data.map(function(d,i){
 	    return {
 		id: d.id,
@@ -201,6 +203,34 @@
 		r: d.r
 	    };
 	});
+	chart.draw();
+    });
+    $('button#mergeGrid').click(function(){
+	var mergedObj = {};
+	chart.data.forEach(function(e){
+	    if(!mergedObj[e.x]) {
+		mergedObj[e.x] = {};
+	    }
+
+	    if(!mergedObj[e.x][e.y]){
+		mergedObj[e.x][e.y] = 0;
+	    }
+	    
+	    mergedObj[e.x][e.y] += e.r;
+	});
+	var mergedArr = [];
+	Object.keys(mergedObj).forEach(function(x){
+	    Object.keys(mergedObj[x]).forEach(function(y){
+		mergedArr.push({
+		    id: mergedArr.length,
+		    x: x,
+		    y: y,
+		    r: mergedObj[x][y]
+		});
+	    });
+	});
+
+        chart.data = mergedArr;
 	chart.draw();
     });
 
