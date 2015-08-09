@@ -102,15 +102,18 @@
 	
 	plotData.enter().append('circle')
 	    .attr('class', bubbleClass)
+	    .style('opacity', 0);
+
+	plotData.transition().duration(200).delay(function(d, i){return i*10;})
 	    .attr("transform", function(){
 		return that.transformBubble.apply(that, arguments);
 	    })
-	    .attr( 'r', function(d){return that.scale.r(d.r);});
-
-	plotData.transition().duration(200);
-	plotData.exit().transition().duration(200).remove();
+	    .attr( 'r', function(d){return that.scale.r(d.r);})
+	    .style('opacity', 1);
+	plotData.exit().transition().duration(200).style('opacity', 0).remove();
 	$(this.bindTo).trigger(this.name +'.draw', {length:this.data.length, zoomScale:this.zoom.scale()})
     };
+    
     BubbleChart.prototype.property = function(key, value){
 	if(value){
 	    this.properties[key] = value;
@@ -159,7 +162,7 @@
 	    ty = py + Math.min(dy,0);
 	} else if (this.scale.y.domain()[0] < 0) {
 	    ty = 0;
-	} else {
+	} else{ 
 	    ty = dy + py;
 	}
 	*/
@@ -213,19 +216,22 @@
 	    }
 
 	    if(!mergedObj[e.x][e.y]){
-		mergedObj[e.x][e.y] = 0;
+		mergedObj[e.x][e.y] = {
+		    id: e.id,
+		    r: 0
+		};
 	    }
 	    
-	    mergedObj[e.x][e.y] += e.r;
+	    mergedObj[e.x][e.y].r += e.r;
 	});
 	var mergedArr = [];
 	Object.keys(mergedObj).forEach(function(x){
 	    Object.keys(mergedObj[x]).forEach(function(y){
 		mergedArr.push({
-		    id: mergedArr.length,
+		    id: mergedObj[x][y].id,
 		    x: x,
 		    y: y,
-		    r: mergedObj[x][y]
+		    r: mergedObj[x][y].r
 		});
 	    });
 	});
