@@ -1,0 +1,151 @@
+#+TITLE PlantUML/Emacs
+
+* PlantUML導入
+  CLOCK: [2015-10-18 日 15:57]
+** 環境
+   - Fedora release 22 (Twenty Two)
+   - GNU Emacs 24.5.1 
+** 参照
+- http://ja.plantuml.com/
+- http://shuzo-kino.hateblo.jp/entry/2014/02/02/232325
+   
+** plantuml donwload
+dnf install plantuml
+** graphviz導入
+dnf install graphviz
+** plantuml-mode導入
+package-install
+plantuml-mode
+** org連携
+~/.emacs.d/inits/44-plantuml.el
+
+- 導入した plantuml.jarのパスの設定
+- Babel連携設定
+
+#+BEGIN_SRC
+(setq org-plantuml-jar-path
+            (expand-file-name "/usr/share/java/plantuml.jar"))
+
+(defun org-mode-init ()
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   (add-to-list 'org-babel-load-languages '(plantuml . t))))
+
+(add-hook 'org-mode-hook 'org-mode-init)
+#+END_SRC
+** Babel記載例
+C-c C-e h o でhtmlに出力、imageディレクトリがあれば image/sequence.pngファイルも生成
+
+#+BEGIN_SRC plantuml :file image/sequence.png :cmdline -charset UTF-8
+@startuml
+HogeController -> HogeService: findHogeList(FindHogeConditionRequestForm)
+HogeService -> HogeDao: isParentAvailable(FindHogeParentCondition)
+HogeDao --> HogeService: boolean
+HogeService -> HogeDao: findChildList
+HogeService --> HogeController: ArrayList<Hoge>
+@enduml
+#+END_SRC
+
+* Babel出力仕様
+** ファイルフォーマット指定
+*** デフォルトはpng
+#+BEGIN_SRC plantuml :file image/sequence.png :cmdline -charset UTF-8
+@startuml
+HogeController -> HogeService: findHogeList(FindHogeConditionRequestForm)
+HogeService -> HogeDao: isParentAvailable(FindHogeParentCondition)
+HogeDao --> HogeService: boolean
+HogeService -> HogeDao: findChildList
+HogeService --> HogeController: ArrayList<Hoge>
+@enduml
+#+END_SRC
+*** -tformatオプションで指定
+SVG指定例
+#+BEGIN_SRC
+ #+BEGIN_SRC plantuml :file image/format.svg :cmdline -charset UTF-8 -tsvg
+#+END_SRC
+
+#+BEGIN_SRC plantuml :file image/format.svg :cmdline -charset UTF-8 -tsvg
+@startuml
+HogeController -> HogeService: findHogeList(FindHogeConditionRequestForm)
+@enduml
+#+END_SRC
+* PlantUML作図
+** シーケンス図
+*** Actor/Boundary/Control/Entity/Database
+#+BEGIN_SRC plantuml :file image/sequence_participants.png :cmdline -charset UTF-8
+@startuml
+actor observer #red
+actor visitor
+boundary "order form"
+control OrderControl
+entity Order
+Database OrderDB
+visitor -> visitor : do *check sheet*
+visitor -> "order form" : press order button
+"order form" ->  OrderControl : request order
+OrderControl -> Order : create
+OrderControl -> OrderDB : save
+"order form" --> visitor : send response
+visitor <-[#blue]> observer : double check
+@enduml
+#+END_SRC
+*** 矢印の装飾と採番
+#+BEGIN_SRC plantuml :file image/sequence_lines01.png :cmdline -charset UTF-8
+@startuml
+title Decorate Arrows/Auto Number
+
+autonumber
+A -> B : go
+B --> A : back
+
+legend right
+  RIGHT LEGEND
+endlegend
+
+@enduml
+#+END_SRC
+
+#+BEGIN_SRC plantuml :file image/sequence_lines02.png :cmdline -charset UTF-8
+@startuml
+autonumber 10
+A -> B : reset number
+B -[#blue]-> A : back
+
+legend left
+  LEFT LEGEND
+endlegend
+
+@enduml
+#+END_SRC
+
+#+BEGIN_SRC plantuml :file image/sequence_lines03.png :cmdline -charset UTF-8
+@startuml
+
+autonumber 20 5
+A -> B : reset number
+B -[#black]-> A : step by 5
+
+legend center
+  CENTER LEGEND
+endlegend
+
+@enduml
+#+END_SRC
+
+*** グループ/ノート
+#+BEGIN_SRC plantuml :file image/sequence_group01.png :cmdline -charset UTF-8
+@startuml
+A -> B : login(id, pass)
+B -> C : create hash
+loop 1000 times
+  C -> C : extend
+  note right: ここでぐるぐるする
+end
+C -> D : findUser(id, hashed)
+note left
+すごい
+ながい
+ノート
+end note
+@enduml
+#+END_SRC
