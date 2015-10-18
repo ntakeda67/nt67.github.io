@@ -1,5 +1,3 @@
-#+TITLE PlantUML/Emacs
-
 * PlantUML導入
   CLOCK: [2015-10-18 日 15:57]
 ** 環境
@@ -30,6 +28,10 @@ plantuml-mode
   (org-babel-do-load-languages
    'org-babel-load-languages
    (add-to-list 'org-babel-load-languages '(plantuml . t))))
+
+(defun my-org-confirm-babel-evaluate (lang body)
+  (not (string= lang "plantuml")))  ; don't ask for plantuml
+          (setq org-confirm-babel-evaluate 'my-org-confirm-babel-evaluate)
 
 (add-hook 'org-mode-hook 'org-mode-init)
 #+END_SRC
@@ -186,5 +188,56 @@ end
 OrderControl -> OrderDB : batch save
 "order form" --> visitor : send response
 visitor <-[#blue]> observer : double check
+@enduml
+#+END_SRC
+
+** ステートマシン図
+*** 開始状態・終了自体
+#+BEGIN_SRC plantuml :file image/state01.png :cmdline -charset UTF-8
+@startuml
+[*] --> State01
+State01: Description 01
+State01: Description 02
+State01 -> State02
+State01 --> [*]
+State02 --> [*]
+@enduml
+#+END_SRC
+
+*** 複合状態
+
+#+BEGIN_SRC plantuml :file image/state02.png :cmdline -charset UTF-8
+@startuml
+
+[*] --> 非会員
+
+state 仮会員 {
+  [*] --> 仮登録会員
+  仮登録会員 --> 審査中会員 : 審査開始
+}
+
+非会員 --> 仮会員 : 登録申請受理
+仮会員 --> 正会員 : 審査合格
+仮会員 --> 非会員 : 審査不合格
+@enduml
+#+END_SRC
+
+*** 矢印方向の制御/注釈
+
+#+BEGIN_SRC plantuml :file image/state03.png :cmdline -charset UTF-8
+@startuml
+
+[*] -right-> 非会員
+note bottom of 非会員 : 下からコメント
+
+state 仮会員 {
+  [*] -right-> 仮登録会員
+  仮登録会員 -right-> 審査中会員 : 審査開始
+}
+
+非会員 -right-> 仮会員 : 登録申請受理
+仮会員 -right-> 正会員 : 審査合格
+仮会員 -left-> 非会員 : 審査不合格
+note top of 仮会員 : 上からコメント
 @enduml
 #+END_SRC

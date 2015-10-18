@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
 <title>install</title>
-<!-- 2015-10-18 日 19:35 -->
+<!-- 2015-10-18 日 21:21 -->
 <meta  http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta  name="generator" content="Org-mode" />
 <meta  name="author" content="natsuki.takeda" />
@@ -173,15 +173,18 @@ for the JavaScript code in this tag.
 <li><a href="#sec-3-1-4">3.1.4. スタイルを変える</a></li>
 </ul>
 </li>
+<li><a href="#sec-3-2">3.2. ステートマシン図</a>
+<ul>
+<li><a href="#sec-3-2-1">3.2.1. 開始状態・終了自体</a></li>
+<li><a href="#sec-3-2-2">3.2.2. 複合状態</a></li>
+<li><a href="#sec-3-2-3">3.2.3. 矢印方向の制御/注釈</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
-<p>
-#+TITLE PlantUML/Emacs
-</p>
-
 <div id="outline-container-sec-1" class="outline-2">
 <h2 id="sec-1"><span class="section-number-2">1</span> PlantUML導入</h2>
 <div class="outline-text-2" id="text-1">
@@ -256,6 +259,10 @@ plantuml-mode
   (org-babel-do-load-languages
    'org-babel-load-languages
    (add-to-list 'org-babel-load-languages '(plantuml . t))))
+
+(defun my-org-confirm-babel-evaluate (lang body)
+  (not (string= lang "plantuml")))  ; don't ask for plantuml
+          (setq org-confirm-babel-evaluate 'my-org-confirm-babel-evaluate)
 
 (add-hook 'org-mode-hook 'org-mode-init)
 </pre>
@@ -376,11 +383,48 @@ SVG指定例
 </div>
 </div>
 </div>
+
+<div id="outline-container-sec-3-2" class="outline-3">
+<h3 id="sec-3-2"><span class="section-number-3">3.2</span> ステートマシン図</h3>
+<div class="outline-text-3" id="text-3-2">
+</div><div id="outline-container-sec-3-2-1" class="outline-4">
+<h4 id="sec-3-2-1"><span class="section-number-4">3.2.1</span> 開始状態・終了自体</h4>
+<div class="outline-text-4" id="text-3-2-1">
+
+<div class="figure">
+<p><img src="image/state01.png" alt="state01.png" />
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-3-2-2" class="outline-4">
+<h4 id="sec-3-2-2"><span class="section-number-4">3.2.2</span> 複合状態</h4>
+<div class="outline-text-4" id="text-3-2-2">
+
+<div class="figure">
+<p><img src="image/state02.png" alt="state02.png" />
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-3-2-3" class="outline-4">
+<h4 id="sec-3-2-3"><span class="section-number-4">3.2.3</span> 矢印方向の制御/注釈</h4>
+<div class="outline-text-4" id="text-3-2-3">
+
+<div class="figure">
+<p><img src="image/state03.png" alt="state03.png" />
+</p>
+</div>
+</div>
+</div>
+</div>
 </div>
 </div>
 <div id="postamble" class="status">
 <p class="author">Author: natsuki.takeda</p>
-<p class="date">Created: 2015-10-18 日 19:35</p>
+<p class="date">Created: 2015-10-18 日 21:21</p>
 <p class="creator"><a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.2.10)</p>
 <p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>
