@@ -149,3 +149,42 @@ note left
 end note
 @enduml
 #+END_SRC
+
+*** スタイルを変える
+#+BEGIN_SRC plantuml :file image/skin_param01.png :cmdline -charset UTF-8
+@startuml
+skinparam backgroundColor #f7f7f7
+skinparam sequence {
+  ArrowColor black
+  ActorBorderColor black
+  LifeLineBorderColor black
+  LifeLineBackgroundColor white
+
+  ParticipantBorderColor black
+  ParticipantBackgroundColor white
+  ParticipantFontSize 17
+  ParticipantFontColor black
+
+  ActorBackgroundColor black
+  ActorFontColor black
+  ActorFontSize 17
+}
+
+actor observer #red
+actor visitor
+boundary "order form"
+control OrderControl
+entity Order
+Database OrderDB
+visitor -> visitor : do *check sheet*
+visitor -> "order form" : press order button
+"order form" ->  OrderControl : request order
+loop order num
+  OrderControl -> Order : create
+  note right: GuruGuru
+end
+OrderControl -> OrderDB : batch save
+"order form" --> visitor : send response
+visitor <-[#blue]> observer : double check
+@enduml
+#+END_SRC
