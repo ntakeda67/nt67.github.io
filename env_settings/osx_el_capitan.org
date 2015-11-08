@@ -1,0 +1,120 @@
+#+AUTHOR:ntakeda67
+* ソフトウェア導入
+** カテゴリとか関係なく最初に入れるもの
+*** Home Brew
+  ターミナルから下記を入力する
+  #+BEGIN_SRC
+  $ ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+  # (中略)
+  $ brew --version
+  0.9.5 (git revision 9182; last commit 2015-11-07)
+  #+END_SRC
+*** wget (後工程の導入作業で使用)
+  brew install wget
+
+*** Google IME
+  下記からダウンロードしてインストール
+  https://www.google.co.jp/ime/
+*** Google Chrome
+** GUI環境
+*** フォント Rounded M+
+    ダウンロード/解凍して出てくるttfを
+    アプリケーション > Font Bookから導入
+** ターミナル環境
+*** iTerm2 (Build 2.1.4)
+**** 導入
+     下記からダウンロードしてインストール
+     https://www.iterm2.com
+*** emacs/zsh/tmux
+**** 導入
+     #+BEGIN_SRC sh
+     brew install emacs zsh tmux 
+     #+END_SRC
+     導入バージョン
+     #+BEGIN_SRC
+$ emacs -version
+GNU Emacs 24.5.1
+Copyright (C) 2015 Free Software Foundation, Inc.
+GNU Emacs comes with ABSOLUTELY NO WARRANTY.
+You may redistribute copies of Emacs
+under the terms of the GNU General Public License.
+For more information about these matters, see the file named COPYING.
+
+$ tmux -V
+tmux 2.1
+
+$ zsh --version
+zsh 5.1.1 (x86_64-apple-darwin15.0.0)
+     #+END_SRC
+**** emacs設定
+     #+BEGIN_SRC sh
+     # オレオレdot設定ファイルの配置 
+     cd ~/
+     git clone https://github.com/ntakeda67/dot.emacs.git
+     ln -s dot.emacs/ ~/.emacs.d
+     # init-loader.el 導入
+     mkdir ~/.emacs.d/site-lisp
+     cd ~/.emacs.d/site-lisp
+     wget https://raw.githubusercontent.com/emacs-jp/init-loader/master/init-loader.el
+     # migemo 導入
+     brew install cmigemo
+     #+END_SRC
+**** zsh 設定
+     #+BEGIN_SRC sh
+     # オレオレ設定ファイルの調達
+     cd ~/
+     wget https://raw.githubusercontent.com/ntakeda67/zshrc/master/.zshrc
+     # OSユーザのデフォルトシェル変更
+     $ chsh
+     Changing shell for nt67.
+     Password for nt67:
+     # Changing user information for <masked>.
+     # Use "passwd" to change the password.
+     ##
+     # Open Directory: /Local/Default
+     ##
+     Shell: /bin/zsh
+     Full Name: <masked>
+     Office Location:
+     Office Phone:
+     Home Phone:
+     #+END_SRC
+     
+**** tmux 設定
+     #+BEGIN_SRC sh
+     cd ~/
+     git clone https://github.com/ntakeda67/.tmux.conf.git dot.tmux.conf
+     ln -s dot.tmux.conf/.tmux.conf ~/.tmux.conf
+     #+END_SRC
+**** emacsのための iTerm2設定
+     #+BEGIN_SRC
+     # CommandをMetaとして使う
+     Profiles -> Keys -> Left option key act as : +Esc
+     Profiles -> Keys -> Right option key act as : +Esc
+     Keys -> Remap Modifier Keys Left Command key: Control Left Option
+     # Command + c, Command + v で コピペ可能にするために iTerm2に捕捉させない
+     Keys -> Global Shortcut Keys : Command + c, Do Not Remap Modifiers
+     Keys -> Global Shortcut Keys : Command + v, Do Not Remap Modifiers
+     #+END_SRC
+**** emacsのための OS設定
+     環境設定 > キーボード > ショートカット > 入力ソース
+     から、下記2つのチェックをオフにする。前者は Mark Regionとの衝突回避のため。
+     後者は対称性を合わせたいがためのついで。
+     - 前の入力ソースを選択
+     - 入力メニューの次のソースを選択
+
+** その他
+*** p7zip (7zip アーカイバ)
+    brew install p7zip
+* アカウント設定
+** github
+   キーの作成・登録はオフィシャルに沿う。
+   鍵ファイル名は変更するので、~/.ssh/config に下記記載
+#+BEGIN_SRC
+Host github.com
+     User git
+     Hostname github.com
+     IdentityFile ~/.ssh/github_mba_id_rsa
+     TCPKeepAlive yes
+     IdentitiesOnly yes
+#+END_SRC
