@@ -1,17 +1,149 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<h1 id="-">これについて</h1>
+<ul>
+<li>npm公式ドキュメント読みメモ</li>
+<li>WIP</li>
+</ul>
+<h1 id="-">参考にしたところ</h1>
+<p><a href="https://docs.npmjs.com/getting-started">https://docs.npmjs.com/getting-started</a></p>
+<h2 id="-">これを書いている時の動作環境</h2>
+<pre><code>~# cat /etc/redhat-release
+Fedora release 22 (Twenty Two)
+~# node -v
+v0.10.36
+~# npm -v
+3.4.0
+</code></pre><h1 id="-">ライブラリのインストール</h1>
+<h2 id="-cli-">ローカルインストール(CLIで対象をインストール対象を直接指定)</h2>
+<p>npm install <hoge>でカレントディレクトリの node_modulesディレクトリに落っこちてくる</p>
+<pre><code># 作業ディレクトリの作成
+cd /home/nt67/work/npmtest
+npm install knockout
+/home/nt67/work/npmtest
+└── knockout@3.4.0
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+npm WARN ENOENT ENOENT, open &#39;/home/nt67/work/npmtest/package.json&#39;
+npm WARN EPACKAGEJSON npmtest No description
+npm WARN EPACKAGEJSON npmtest No repository field.
+npm WARN EPACKAGEJSON npmtest No README data
+npm WARN EPACKAGEJSON npmtest No license field.
+tree /home/nt67/work/npmtest
+/home/nt67/work/npmtest
+└── node_modules
+    └── knockout
+        ├── README.md
+        ├── build
+        │   └── output
+        │       ├── knockout-latest.debug.js
+        │       └── knockout-latest.js
+        └── package.json
 
-<head>
-<title>doc.memo.html</title>
+4 directories, 4 files
+</code></pre><h1 id="-">プロジェクトの作成</h1>
+<h2 id="package-json-">package.jsonで作成プロジェクトの設定を作る</h2>
+<h3 id="package-json-">package.jsonは何のためのものか</h3>
+<p>package.jsonでプロジェクトについて次の内容を表現できる。</p>
+<ul>
+<li>作成するプロジェクトがどのライブラリに依存しているか</li>
+<li>そのライブラリについてどのバージョンを使用できるか</li>
+<li>他の開発者がビルド作業を再実行しやすくできる</li>
+</ul>
+<p>最小限の記載は、nameとversion。
+更にnpm initでpackage.json記載の不足内容が補完される。
+色々細かい聞かれるけど、 npm init --yesでデフォルト設定が埋められる。</p>
+<pre><code>cat /home/nt67/work/npmtest/package_json_test/package.json
+{
+    &quot;name&quot;: &quot;hoge-app&quot;,
+    &quot;version&quot;: &quot;0.0.1&quot;
+}
 
-</head>
+npm init --yes
+Wrote to /home/nt67/work/npmtest/package_json_test/package.json:
 
-<body>
+{
+&quot;name&quot;: &quot;package_json_test&quot;,
+&quot;version&quot;: &quot;1.0.0&quot;,
+&quot;description&quot;: &quot;&quot;,
+&quot;main&quot;: &quot;index.js&quot;,
+&quot;scripts&quot;: {
+&quot;test&quot;: &quot;echo \&quot;Error: no test specified\&quot; &amp;&amp; exit 1&quot;
+},
+&quot;keywords&quot;: [],
+&quot;author&quot;: &quot;&quot;,
+&quot;license&quot;: &quot;ISC&quot;
+}
+</code></pre><h3 id="-">依存ライブラリを定義する</h3>
+<p>package.jsonにて用途別に次の2種設定できる</p>
+<ul>
+<li>dependencies
+アプリケーションが稼働するために必要なものを定義する</li>
+<li>devDependencies
+開発やテストに必要なものを定義する</li>
+</ul>
+<p>package.jsonに記載するとこんな感じ</p>
+<pre><code>cat ~/work/npmtest/package_json_test/package.json
+{
+  &quot;name&quot;: &quot;package_json_test&quot;,
+  &quot;version&quot;: &quot;1.0.0&quot;,
+  &quot;description&quot;: &quot;&quot;,
+  &quot;main&quot;: &quot;index.js&quot;,
+  &quot;scripts&quot;: {
+    &quot;test&quot;: &quot;echo \&quot;Error: no test specified\&quot; &amp;&amp; exit 1&quot;
+  },
+  &quot;dependencies&quot;: {
+      &quot;knockout&quot;: &quot;3.4.0&quot;
+  },
+  &quot;devDependencies&quot;: {
+      &quot;clean-css&quot;: &quot;3.4.9&quot;
+  },
+  &quot;keywords&quot;: [],
+  &quot;author&quot;: &quot;&quot;,
+  &quot;license&quot;: &quot;ISC&quot;
+  }
+</code></pre><pre><code># 前回との差分
+~/work/npmtest/package_json_test# diff package.json package.json.01
+9,14d8
+&lt;   &quot;dependencies&quot;: {
+&lt;       &quot;knockout&quot;: &quot;3.4.0&quot;
+&lt;   },
+&lt;   &quot;devDependencies&quot;: {
+&lt;       &quot;clean-css&quot;: &quot;3.4.9&quot;
+&lt;   },
+</code></pre><p>直接package.jsonに書かなくても、CLIからも足せる</p>
+<pre><code>npm install knockout.mapping@2.4.3 --save
+package_json_test@1.0.0 /home/nt67/work/npmtest/package_json_test
+└─┬ knockout.mapping@2.4.3
+└── knockout@3.4.0
 
-zsh:1: command not found: markdown
+npm WARN EPACKAGEJSON package_json_test@1.0.0 No description
+npm WARN EPACKAGEJSON package_json_test@1.0.0 No repository field.
+~/work/npmtest/package_json_test# tree
+.
+├── node_modules
+│   └── knockout.mapping
+│       ├── README.md
+│       ├── knockout.mapping.js
+│       ├── node_modules
+│       │   └── knockout
+│       │       ├── README.md
+│       │       ├── build
+│       │       │   └── output
+│       │       │       ├── knockout-latest.debug.js
+│       │       │       └── knockout-latest.js
+│       │       └── package.json
+│       └── package.json
+├── package.json
+├── package.json.01
+└── package.json.02
 
-</body>
-</html>
+6 directories, 10 files
+~/work/npmtest/package_json_test# diff package.json package.json.02
+10,11c10
+&lt;     &quot;knockout&quot;: &quot;3.4.0&quot;,
+&lt;     &quot;knockout.mapping&quot;: &quot;^2.4.3&quot;
+---
+&gt;       &quot;knockout&quot;: &quot;3.4.0&quot;
+14c13
+&lt;     &quot;clean-css&quot;: &quot;3.4.9&quot;
+---
+&gt;       &quot;clean-css&quot;: &quot;3.4.9&quot;
+</code></pre>

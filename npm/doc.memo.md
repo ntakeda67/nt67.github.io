@@ -1,7 +1,6 @@
 # これについて
 * npm公式ドキュメント読みメモ
 * WIP
-
 # 参考にしたところ
 https://docs.npmjs.com/getting-started
 
